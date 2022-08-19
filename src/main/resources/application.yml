@@ -28,5 +28,5 @@ spring:
 logging:
   level:
     root: info
-    com.server.erentronic: debug
+    com.example.elevenstreet: debug
     org.hibernate.SQL: debug
