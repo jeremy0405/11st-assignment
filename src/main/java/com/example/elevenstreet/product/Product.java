@@ -11,10 +11,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class Product {
 
 	@Id
@@ -37,4 +39,12 @@ public class Product {
 	@JoinColumn
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Seller seller;
+
+	public Long getSellerId() {
+		return seller.getId();
+	}
+
+	public String getSellerName() {
+		return seller.getName();
+	}
 }
