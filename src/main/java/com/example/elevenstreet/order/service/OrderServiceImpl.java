@@ -6,13 +6,17 @@ import com.example.elevenstreet.order.Order;
 import com.example.elevenstreet.order.OrderProduct;
 import com.example.elevenstreet.order.dto.request.OrderRequest;
 import com.example.elevenstreet.order.dto.request.SingleOrderRequest;
+import com.example.elevenstreet.order.dto.response.OrderHistoryResponse;
 import com.example.elevenstreet.order.dto.response.OrderResponse;
 import com.example.elevenstreet.order.repository.OrderRepository;
 import com.example.elevenstreet.product.Product;
 import com.example.elevenstreet.product.repository.ProductRepository;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +27,14 @@ public class OrderServiceImpl implements OrderService {
 
 	private final OrderRepository orderRepository;
 	private final ProductRepository productRepository;
+
+	@Override
+	public Page<OrderHistoryResponse> getOrderHistory(String userId, LocalDateTime startDate,
+		LocalDateTime endDate, Pageable pageable) {
+
+		Page<Order> orders = orderRepository.findByUserIdAndDateCondition(userId, startDate, endDate, pageable);
+		return orders.map(OrderHistoryResponse::from);
+	}
 
 	@Transactional
 	@Override
