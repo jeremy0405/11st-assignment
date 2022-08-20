@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 import com.example.elevenstreet.common.Address;
+import com.example.elevenstreet.order.dto.request.OrderCancelRequest;
 import com.example.elevenstreet.order.dto.request.OrderRequest;
 import com.example.elevenstreet.order.dto.request.SingleOrderRequest;
 import io.restassured.RestAssured;
@@ -79,6 +80,26 @@ class OrderAcceptanceTest {
 
 		.then()
 			.statusCode(HttpStatus.CREATED.value())
+			.body("orderId", notNullValue());
+	}
+
+	@Test
+	@DisplayName("회원의 주문 취소 요청이 정상적인 경우라면 OK 상태 코드와 취소된 주문의 id가 반환된다.")
+	void cancelOrder() {
+		OrderCancelRequest orderCancelRequest = OrderCancelRequest.builder()
+			.cancelPrice(4040000)
+			.build();
+
+		given()
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.contentType(ContentType.JSON)
+			.body(orderCancelRequest)
+
+		.when()
+			.post("/api/orders/1/cancel")
+
+		.then()
+			.statusCode(HttpStatus.OK.value())
 			.body("orderId", notNullValue());
 	}
 

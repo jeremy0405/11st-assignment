@@ -285,7 +285,7 @@ class OrderServiceTest {
 		//when
 
 		//then
-		assertThatThrownBy(() -> orderService.cancelOrder(1L, orderCancelRequest))
+		assertThatThrownBy(() -> orderService.cancelOrder(4L, orderCancelRequest))
 			.isInstanceOf(OrderException.class)
 			.hasMessage(ErrorCode.NOT_MATCH_WITH_CANCELPRICE.getMessage());
 	}
