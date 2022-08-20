@@ -61,8 +61,21 @@ public class Order extends Timestamped {
 		orderProduct.assignOrder(this);
 	}
 
-	public void cancel(
-		OrderCancelRequest orderCancelRequest) {
+	public void cancel(OrderCancelRequest orderCancelRequest) {
+		checkStatus();
+
+		Integer cancelPrice = orderCancelRequest.getCancelPrice();
+		for (OrderProduct orderProduct : orderProducts) {
+			cancelPrice -= orderProduct.getTotalPrice();
+			orderProduct.cancel();
+		}
+
+		validCancelPrice(cancelPrice);
+
+		this.setStatus(OrderStatus.CANCELED);
+	}
+
+	private void checkStatus() {
 		if (status == OrderStatus.COMPLETED) {
 			throw new OrderException(ErrorCode.NOT_AVAILABLE_CANCEL);
 		}
@@ -70,18 +83,11 @@ public class Order extends Timestamped {
 		if (status == OrderStatus.CANCELED) {
 			throw new OrderException(ErrorCode.ALREADY_CANCELED);
 		}
+	}
 
-		Integer cancelPrice = orderCancelRequest.getCancelPrice();
-
-		for (OrderProduct orderProduct : orderProducts) {
-			cancelPrice -= orderProduct.getTotalPrice();
-			orderProduct.cancel();
-		}
-
+	private void validCancelPrice(Integer cancelPrice) {
 		if (cancelPrice != 0) {
 			throw new OrderException(ErrorCode.NOT_MATCH_WITH_CANCELPRICE);
 		}
-
-		this.setStatus(OrderStatus.CANCELED);
 	}
 }
