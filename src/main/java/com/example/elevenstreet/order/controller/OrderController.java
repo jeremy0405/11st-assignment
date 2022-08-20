@@ -1,5 +1,6 @@
 package com.example.elevenstreet.order.controller;
 
+import com.example.elevenstreet.order.dto.request.OrderCancelRequest;
 import com.example.elevenstreet.order.dto.request.OrderRequest;
 import com.example.elevenstreet.order.dto.response.OrderHistoryResponse;
 import com.example.elevenstreet.order.dto.response.OrderResponse;
@@ -14,6 +15,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -44,6 +46,15 @@ public class OrderController {
 		@RequestBody @Valid OrderRequest orderRequest) {
 
 		OrderResponse response = orderService.order(userId, orderRequest);
+
+		return ResponseEntity.ok(response);
+	}
+
+	@PostMapping("/{orderId}/cancel")
+	public ResponseEntity<OrderResponse> cancelOrder(@PathVariable Long orderId,
+		@RequestBody OrderCancelRequest orderCancelRequest) {
+
+		OrderResponse response = orderService.cancelOrder(orderId, orderCancelRequest);
 
 		return ResponseEntity.ok(response);
 	}

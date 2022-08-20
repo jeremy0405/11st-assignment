@@ -1,5 +1,6 @@
 package com.example.elevenstreet.order.service;
 
+import com.example.elevenstreet.order.dto.request.OrderCancelRequest;
 import com.example.elevenstreet.order.dto.request.OrderRequest;
 import com.example.elevenstreet.order.dto.response.OrderHistoryResponse;
 import com.example.elevenstreet.order.dto.response.OrderResponse;
@@ -12,4 +13,6 @@ public interface OrderService {
 	Page<OrderHistoryResponse> getOrderHistory(String userId, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
 
 	OrderResponse order(String userId, OrderRequest orderRequest);
+
+	OrderResponse cancelOrder(Long orderId, OrderCancelRequest orderCancelRequest);
 }
