@@ -1,5 +1,7 @@
 package com.example.elevenstreet.order.service;
 
+import com.example.elevenstreet.exception.ErrorCode;
+import com.example.elevenstreet.exception.NoSuchEntityException;
 import com.example.elevenstreet.order.Order;
 import com.example.elevenstreet.order.OrderProduct;
 import com.example.elevenstreet.order.dto.request.OrderRequest;
@@ -30,7 +32,7 @@ public class OrderServiceImpl implements OrderService {
 
 		for (SingleOrderRequest singleOrder : orderRequest.getOrders()) {
 			Product product = productRepository.findById(singleOrder.getProductId())
-				.orElseThrow(() -> new RuntimeException("해당 상품이 존재하지 않습니다"));
+				.orElseThrow(() -> new NoSuchEntityException(ErrorCode.NO_SUCH_PRODUCT));
 
 			orderProducts.add(OrderProduct.createOrderProduct(product, singleOrder.getPrice(), singleOrder.getQuantity()));
 		}

@@ -1,5 +1,7 @@
 package com.example.elevenstreet.product;
 
+import com.example.elevenstreet.exception.ErrorCode;
+import com.example.elevenstreet.exception.ProductException;
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -43,20 +45,20 @@ public class Product {
 
 	public void reduceQuantity(Integer quantity) {
 		if (this.quantity < quantity) {
-			throw new RuntimeException("재고가 부족합니다");
+			throw new ProductException(ErrorCode.NOT_ENOUGH_QUANTITY);
 		}
 		this.quantity -= quantity;
 	}
 
 	public void checkProductStatus() {
 		if (status == ProductStatus.SUSPENDED) {
-			throw new RuntimeException("판매 중지된 상품입니다");
+			throw new ProductException(ErrorCode.SUSPENDED_PRODUCT);
 		}
 	}
 
 	public void checkTotalPrice(Integer inputPrice, Integer quantity) {
 		if (this.price * quantity > inputPrice) {
-			throw new RuntimeException("입금된 금액이 충분하지 않습니다");
+			throw new ProductException(ErrorCode.NOT_ENOUGH_INPUT_PRICE);
 		}
 	}
 
