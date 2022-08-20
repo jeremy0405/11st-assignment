@@ -2,6 +2,9 @@ package com.example.elevenstreet.order;
 
 import com.example.elevenstreet.common.Address;
 import com.example.elevenstreet.common.Timestamped;
+import com.example.elevenstreet.exception.ErrorCode;
+import com.example.elevenstreet.exception.OrderException;
+import com.example.elevenstreet.order.dto.request.OrderCancelRequest;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -58,5 +61,29 @@ public class Order extends Timestamped {
 	private void addOrderProduct(OrderProduct orderProduct) {
 		this.orderProducts.add(orderProduct);
 		orderProduct.assignOrder(this);
+	}
+
+	public void cancel(
+		OrderCancelRequest orderCancelRequest) {
+		if (status == OrderStatus.COMPLETED) {
+			throw new OrderException(ErrorCode.NOT_AVAILABLE_CANCEL);
+		}
+
+		if (status == OrderStatus.CANCELLED) {
+			throw new OrderException(ErrorCode.ALREADY_CANCELED);
+		}
+
+		Integer cancelPrice = orderCancelRequest.getCancelPrice();
+
+		for (OrderProduct orderProduct : orderProducts) {
+			cancelPrice -= orderProduct.getTotalPrice();
+			orderProduct.cancel();
+		}
+
+		if (cancelPrice != 0) {
+			throw new OrderException(ErrorCode.NOT_MATCH_WITH_CANCELPRICE);
+		}
+
+		this.setStatus(OrderStatus.CANCELLED);
 	}
 }

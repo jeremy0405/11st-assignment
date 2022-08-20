@@ -62,6 +62,10 @@ public class Product {
 		}
 	}
 
+	public void increaseQuantity(Integer quantity) {
+		this.quantity += quantity;
+	}
+
 	public Long getSellerId() {
 		return seller.getId();
 	}

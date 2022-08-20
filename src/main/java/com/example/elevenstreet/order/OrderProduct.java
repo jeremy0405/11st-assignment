@@ -50,4 +50,8 @@ public class OrderProduct {
 	public void assignOrder(Order order) {
 		this.order = order;
 	}
+
+	public void cancel() {
+		getProduct().increaseQuantity(quantity);
+	}
 }
