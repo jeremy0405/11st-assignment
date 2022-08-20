@@ -4,7 +4,6 @@ import com.example.elevenstreet.product.dto.ProductResponse;
 import com.example.elevenstreet.product.service.ProductService;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -33,5 +32,4 @@ public class ProductController {
 
 		return productService.getProducts(displayDate, pageable);
 	}
-
 }

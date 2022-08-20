@@ -12,7 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Version;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -57,9 +56,13 @@ public class Product {
 	}
 
 	public void checkTotalPrice(Integer inputPrice, Integer quantity) {
-		if (this.price * quantity > inputPrice) {
+		if (calculateTotalPrice(quantity) > inputPrice) {
 			throw new ProductException(ErrorCode.NOT_ENOUGH_INPUT_PRICE);
 		}
+	}
+
+	private int calculateTotalPrice(Integer quantity) {
+		return this.price * quantity;
 	}
 
 	public void increaseQuantity(Integer quantity) {

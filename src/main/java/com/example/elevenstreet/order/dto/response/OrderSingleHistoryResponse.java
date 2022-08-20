@@ -1,6 +1,5 @@
 package com.example.elevenstreet.order.dto.response;
 
-import com.example.elevenstreet.order.Order;
 import com.example.elevenstreet.order.OrderProduct;
 import lombok.AccessLevel;
 import lombok.Getter;

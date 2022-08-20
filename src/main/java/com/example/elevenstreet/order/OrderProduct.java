@@ -36,15 +36,20 @@ public class OrderProduct {
 	private Integer quantity;
 
 	public static OrderProduct createOrderProduct(Product product, Integer totalPrice, Integer quantity) {
+		checkProduct(product, totalPrice, quantity);
+
 		OrderProduct orderProduct = new OrderProduct();
 		orderProduct.setProduct(product);
 		orderProduct.setTotalPrice(totalPrice);
 		orderProduct.setQuantity(quantity);
 
+		return orderProduct;
+	}
+
+	private static void checkProduct(Product product, Integer totalPrice, Integer quantity) {
 		product.reduceQuantity(quantity);
 		product.checkTotalPrice(totalPrice, quantity);
 		product.checkProductStatus();
-		return orderProduct;
 	}
 
 	public void assignOrder(Order order) {

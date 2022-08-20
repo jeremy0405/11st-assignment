@@ -8,7 +8,6 @@ import com.example.elevenstreet.order.dto.request.OrderCancelRequest;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -34,7 +33,6 @@ public class Order extends Timestamped {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "x_user_id")
 	private String userId;
 
 	@Embedded

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.validation.Valid;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,6 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 public class ErrorDetailResponse {
 
 	private final ErrorResponse errorResponse;
-
 	private final List<RequestFieldError> errors;
 
 	public static ErrorDetailResponse of(MethodArgumentNotValidException e) {
@@ -43,9 +41,7 @@ public class ErrorDetailResponse {
 	public static class RequestFieldError {
 
 		private final String field;
-
 		private final String value;
-
 		private final String reason;
 
 		private RequestFieldError(FieldError fieldError) {
