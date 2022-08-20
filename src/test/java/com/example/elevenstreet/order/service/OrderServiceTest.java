@@ -233,6 +233,95 @@ class OrderServiceTest {
 			.hasMessage(ErrorCode.SUSPENDED_PRODUCT.getMessage());
 	}
 
+	@Test
+	@DisplayName("회원이 주문 취소를 한다면 주문의 상태가 CANCELED로 바뀌고 상품의 재고가 원래 값으로 늘어나며 주문 식별자 값을 반환한다.")
+	void cancelValidOrder() {
+		//given
+		Long orderId = 2L;
+		OrderCancelRequest orderCancelRequest = OrderCancelRequest.builder()
+			.cancelPrice(500000)
+			.build();
+
+		Order beforeCanceledOrder = orderRepository.findById(orderId).get();
+		OrderProduct beforeCanceledOrderProduct = beforeCanceledOrder.getOrderProducts().get(0);
+		Integer quantity = beforeCanceledOrderProduct.getQuantity();
+		Integer beforeCanceledQuantity = beforeCanceledOrderProduct.getProduct().getQuantity();
+
+		//when
+		OrderResponse orderResponse = orderService.cancelOrder(orderId, orderCancelRequest);
+		Long responseOrderId = orderResponse.getOrderId();
+		Order order = orderRepository.findById(responseOrderId).get();
+
+		//then
+		assertThat(order.getStatus()).isEqualTo(OrderStatus.CANCELED);
+		assertThat(order.getOrderProducts().get(0).getProduct().getQuantity())
+			.isEqualTo(beforeCanceledQuantity + quantity);
+	}
+
+	@Test
+	@DisplayName("회원의 주문 취소에서 주문의 ID가 유효하지 않으면 예외를 반환한다.")
+	void cancelInvalidOrderByOrderId() {
+		//given
+		OrderCancelRequest orderCancelRequest = OrderCancelRequest.builder()
+			.cancelPrice(1000)
+			.build();
+
+		//when
+
+		//then
+		assertThatThrownBy(() -> orderService.cancelOrder(9999999999L, orderCancelRequest))
+			.isInstanceOf(NoSuchEntityException.class)
+			.hasMessage(ErrorCode.NO_SUCH_ORDER.getMessage());
+	}
+
+	@Test
+	@DisplayName("회원의 주문 취소에서 취소 금액이 유효하지 않으면 예외를 반환한다.")
+	void cancelInvalidOrderByCancelPrice() {
+		//given
+		OrderCancelRequest orderCancelRequest = OrderCancelRequest.builder()
+			.cancelPrice(1)
+			.build();
+
+		//when
+
+		//then
+		assertThatThrownBy(() -> orderService.cancelOrder(1L, orderCancelRequest))
+			.isInstanceOf(OrderException.class)
+			.hasMessage(ErrorCode.NOT_MATCH_WITH_CANCELPRICE.getMessage());
+	}
+
+	@Test
+	@DisplayName("회원의 주문 취소에서 주문이 배송 완료상태면 예외를 반환한다.")
+	void cancelInvalidOrderByCompletedStatus() {
+		//given
+		OrderCancelRequest orderCancelRequest = OrderCancelRequest.builder()
+			.cancelPrice(3400000)
+			.build();
+
+		//when
+
+		//then
+		assertThatThrownBy(() -> orderService.cancelOrder(6L, orderCancelRequest))
+			.isInstanceOf(OrderException.class)
+			.hasMessage(ErrorCode.NOT_AVAILABLE_CANCEL.getMessage());
+	}
+
+	@Test
+	@DisplayName("회원의 주문 취소에서 주문이 이미 취소된 상태면 예외를 반환한다.")
+	void cancelInvalidOrderByCanceledStatus() {
+		//given
+		OrderCancelRequest orderCancelRequest = OrderCancelRequest.builder()
+			.cancelPrice(330000)
+			.build();
+
+		//when
+
+		//then
+		assertThatThrownBy(() -> orderService.cancelOrder(5L, orderCancelRequest))
+			.isInstanceOf(OrderException.class)
+			.hasMessage(ErrorCode.ALREADY_CANCELED.getMessage());
+	}
+
 	private OrderRequest createOrderRequest(Long productId, Integer quantity, Integer price) {
 		SingleOrderRequest singleOrderRequest = SingleOrderRequest.builder()
 			.productId(productId)
