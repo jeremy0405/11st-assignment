@@ -1,4 +1,4 @@
-package com.example.elevenstreet.order;
+package com.example.elevenstreet.common;
 
 import javax.persistence.Embeddable;
 

@@ -1,5 +1,6 @@
 package com.example.elevenstreet.order;
 
+import com.example.elevenstreet.common.Address;
 import com.example.elevenstreet.common.Timestamped;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
