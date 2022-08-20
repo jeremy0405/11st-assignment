@@ -30,12 +30,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class OrderController {
 
-	private static final String USER_ID = "x-user-id";
+	private static final String USER_ID_HEADER = "x-user-id";
 
 	private final OrderService orderService;
 
 	@GetMapping
-	public Page<OrderHistoryResponse> getOrderHistory(@RequestHeader(USER_ID) String userId,
+	public Page<OrderHistoryResponse> getOrderHistory(@RequestHeader(USER_ID_HEADER) String userId,
 		@RequestParam("start_date") @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime startDate,
 		@RequestParam("end_date") @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime endDate,
 		@PageableDefault(size = 5) Pageable pageable) {
@@ -48,7 +48,7 @@ public class OrderController {
 	}
 
 	@PostMapping
-	public ResponseEntity<OrderResponse> order(@RequestHeader(USER_ID) String userId,
+	public ResponseEntity<OrderResponse> order(@RequestHeader(USER_ID_HEADER) String userId,
 		@RequestBody @Valid OrderRequest orderRequest) {
 
 		OrderResponse response = orderService.order(userId, orderRequest);
