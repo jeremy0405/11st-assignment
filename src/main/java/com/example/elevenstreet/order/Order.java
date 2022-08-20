@@ -67,7 +67,7 @@ public class Order extends Timestamped {
 			throw new OrderException(ErrorCode.NOT_AVAILABLE_CANCEL);
 		}
 
-		if (status == OrderStatus.CANCELLED) {
+		if (status == OrderStatus.CANCELED) {
 			throw new OrderException(ErrorCode.ALREADY_CANCELED);
 		}
 
@@ -82,6 +82,6 @@ public class Order extends Timestamped {
 			throw new OrderException(ErrorCode.NOT_MATCH_WITH_CANCELPRICE);
 		}
 
-		this.setStatus(OrderStatus.CANCELLED);
+		this.setStatus(OrderStatus.CANCELED);
 	}
 }
