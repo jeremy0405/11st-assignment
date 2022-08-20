@@ -43,16 +43,16 @@ class ProductServiceTest {
 
 		Pageable pageable = PageRequest.of(0, products.size());
 
-		Page<ProductResponse> actual =
+		Page<ProductResponse> productResponses =
 			new PageImpl<>(actualResponses, pageable, actualResponses.size());
 
 		//when
 		Page<ProductResponse> result = productService.getProducts(displayDate, pageable);
 
 		//then
-		assertThat(actual)
+		assertThat(result)
 			.usingRecursiveComparison()
-			.isEqualTo(result);
+			.isEqualTo(productResponses);
 	}
 
 	@Test
