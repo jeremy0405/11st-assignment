@@ -1,5 +1,6 @@
 package com.example.elevenstreet.order;
 
+import com.example.elevenstreet.common.Timestamped;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "orders")
-public class Order {
+public class Order extends Timestamped {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
