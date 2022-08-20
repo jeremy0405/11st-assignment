@@ -25,4 +25,6 @@ public class Order extends Timestamped {
 
 	@Embedded
 	private Address address;
+
+	private OrderStatus status;
 }

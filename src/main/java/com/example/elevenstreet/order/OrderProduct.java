@@ -30,6 +30,4 @@ public class OrderProduct {
 	private Integer totalPrice;
 
 	private Integer quantity;
-
-	private OrderStatus status;
 }
