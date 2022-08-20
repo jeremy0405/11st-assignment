@@ -1,9 +1,15 @@
 package com.example.elevenstreet.acceptance;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.IsEqual.equalTo;
 
+import com.example.elevenstreet.common.Address;
+import com.example.elevenstreet.order.dto.request.OrderRequest;
+import com.example.elevenstreet.order.dto.request.SingleOrderRequest;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,5 +61,43 @@ class OrderAcceptanceTest {
 			.body("first", equalTo(true))
 			.body("last", equalTo(true))
 			.body("size", equalTo(5));
+	}
+
+	@Test
+	@DisplayName("회원의 주문 요청이 정상적인 경우라면 Created 상태 코드와 생성한 주문의 id가 반환된다.")
+	void createOrder() {
+		OrderRequest orderRequest = createOrderRequest();
+
+		given()
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.header("x-user-id", "greatpeople")
+			.contentType(ContentType.JSON)
+			.body(orderRequest)
+
+		.when()
+			.post("/api/orders")
+
+		.then()
+			.statusCode(HttpStatus.CREATED.value())
+			.body("orderId", notNullValue());
+	}
+
+	private OrderRequest createOrderRequest() {
+		SingleOrderRequest singleOrderRequest = SingleOrderRequest.builder()
+			.productId(1L)
+			.price(3400000)
+			.quantity(1)
+			.build();
+
+		Address address = Address.builder()
+			.city("city")
+			.street("street")
+			.zipCode("zipCode")
+			.build();
+
+		return OrderRequest.builder()
+			.address(address)
+			.orders(List.of(singleOrderRequest))
+			.build();
 	}
 }
