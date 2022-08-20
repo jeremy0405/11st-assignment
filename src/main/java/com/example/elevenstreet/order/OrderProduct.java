@@ -10,9 +10,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter(AccessLevel.PRIVATE)
 public class OrderProduct {
 
 	@Id
@@ -30,4 +32,20 @@ public class OrderProduct {
 	private Integer totalPrice;
 
 	private Integer quantity;
+
+	public static OrderProduct createOrderProduct(Product product, Integer totalPrice, Integer quantity) {
+		OrderProduct orderProduct = new OrderProduct();
+		orderProduct.setProduct(product);
+		orderProduct.setTotalPrice(totalPrice);
+		orderProduct.setQuantity(quantity);
+
+		product.reduceQuantity(quantity);
+		product.checkTotalPrice(totalPrice, quantity);
+		product.checkProductStatus();
+		return orderProduct;
+	}
+
+	public void assignOrder(Order order) {
+		this.order = order;
+	}
 }
