@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,13 +29,13 @@ class ProductServiceTest {
 	private ProductRepository productRepository;
 
 	@Test
-	@DisplayName("displayDate 기준으로 전시중인 상품을 반환한다.")
+	@DisplayName("상품 조회를 하면 displayDate 기준으로 전시중인 상품을 페이징하여 반환한다.")
 	void getProductsByDisplayDate() {
 	    //given
 		LocalDateTime displayDate = LocalDateTime.of(2022, 10, 1, 0, 0);
 
 		List<Product> products = productRepository.findAll();
-		List<ProductResponse> actualProductResponse = products.stream()
+		List<ProductResponse> actualResponses = products.stream()
 			.filter(product -> product.getStartsAt().isBefore(displayDate) &&
 				product.getEndsAt().isAfter(displayDate))
 			.map(ProductResponse::from)
@@ -42,14 +43,16 @@ class ProductServiceTest {
 
 		Pageable pageable = PageRequest.of(0, products.size());
 
+		Page<ProductResponse> actual =
+			new PageImpl<>(actualResponses, pageable, actualResponses.size());
+
 		//when
-		Page<ProductResponse> productResponsePage = productService.getProducts(displayDate, pageable);
-		List<ProductResponse> results = productResponsePage.stream()
-			.collect(Collectors.toList());
+		Page<ProductResponse> result = productService.getProducts(displayDate, pageable);
 
 		//then
-		assertThat(results).usingRecursiveComparison()
-			.isEqualTo(actualProductResponse);
+		assertThat(actual)
+			.usingRecursiveComparison()
+			.isEqualTo(result);
 	}
 
 	@Test
@@ -65,5 +68,4 @@ class ProductServiceTest {
 	    //then
 		assertThat(result).isEmpty();
 	}
-
 }
