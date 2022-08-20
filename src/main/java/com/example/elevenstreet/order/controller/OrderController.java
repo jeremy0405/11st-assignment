@@ -1,5 +1,7 @@
 package com.example.elevenstreet.order.controller;
 
+import com.example.elevenstreet.exception.ErrorCode;
+import com.example.elevenstreet.exception.OrderException;
 import com.example.elevenstreet.order.dto.request.OrderCancelRequest;
 import com.example.elevenstreet.order.dto.request.OrderRequest;
 import com.example.elevenstreet.order.dto.response.OrderHistoryResponse;
@@ -37,6 +39,10 @@ public class OrderController {
 		@RequestParam("start_date") @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime startDate,
 		@RequestParam("end_date") @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime endDate,
 		@PageableDefault(size = 5) Pageable pageable) {
+
+		if (startDate.isAfter(endDate)) {
+			throw new OrderException(ErrorCode.INVALID_INPUT_VALUE);
+		}
 
 		return orderService.getOrderHistory(userId, startDate, endDate, pageable);
 	}
