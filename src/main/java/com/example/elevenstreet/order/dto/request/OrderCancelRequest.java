@@ -1,5 +1,6 @@
 package com.example.elevenstreet.order.dto.request;
 
+import javax.validation.constraints.PositiveOrZero;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,5 +13,6 @@ import lombok.NoArgsConstructor;
 @Getter
 public class OrderCancelRequest {
 
+	@PositiveOrZero
 	private Integer cancelPrice;
 }

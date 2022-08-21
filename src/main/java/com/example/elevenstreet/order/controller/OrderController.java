@@ -59,7 +59,7 @@ public class OrderController {
 
 	@PostMapping("/{orderId}/cancel")
 	public ResponseEntity<OrderResponse> cancelOrder(@PathVariable Long orderId,
-		@RequestBody OrderCancelRequest orderCancelRequest) {
+		@RequestBody @Valid OrderCancelRequest orderCancelRequest) {
 
 		OrderResponse response = orderService.cancelOrder(orderId, orderCancelRequest);
 
