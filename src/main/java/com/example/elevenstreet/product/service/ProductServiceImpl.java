@@ -5,6 +5,7 @@ import com.example.elevenstreet.product.dto.ProductResponse;
 import com.example.elevenstreet.product.repository.ProductRepository;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ public class ProductServiceImpl implements ProductService {
 
 	private final ProductRepository productRepository;
 
+	@Cacheable(cacheNames = "getProducts", key = "#displayDate.toLocalDate().toString().concat(#pageable.pageNumber)")
 	@Override
 	public Page<ProductResponse> getProducts(LocalDateTime displayDate, Pageable pageable) {
 		Page<Product> products = productRepository.findAll(pageable, displayDate);
