@@ -20,19 +20,19 @@
 
 <br>
 
-### **에러 설계**
+### **예외 설계**
 
-| 에러 코드 | 내용 |
+| 예외 코드 | 내용 |
 |--|--|
-| A001 | 유효하지 않은 ProductId 요청 시 발생하는 에러 |
-| A002 | 유효하지 않은 OrderId 요청 시 발생하는 에러 |
-| B001 | 상품 주문 시 상품의 재고가 부족하면 발생하는 에러 |
-| B002 | 상품 주문 시 요청의 금액이 상품의 금액보다 작으면 발생하는 에러 |
-| B003 | 상품 주문 시 상품의 상태가 판매 중지된 상품이면 발생하는 에러 |
-| C001 | 상품 취소 시 주문이 이미 완료된 상태일 때 발생하는 에러 |
-| C002 | 상품 취소 시 주문이 이미 취소된 상태일 때 발생하는 에러 |
-| C003 | 상품 취소 시 취소 금액과 총 주문 금액이 일치하지 않을 때 발생하는 에러 |
-| D001 | 입력 파라미터가 잘못된 경우 발생하는 에러 |
+| A001 | 유효하지 않은 ProductId 요청 시 발생하는 예외 |
+| A002 | 유효하지 않은 OrderId 요청 시 발생하는 예외 |
+| B001 | 상품 주문 시 상품의 재고가 부족하면 발생하는 예외 |
+| B002 | 상품 주문 시 요청의 금액이 상품의 금액보다 작으면 발생하는 예외 |
+| B003 | 상품 주문 시 상품의 상태가 판매 중지된 상품이면 발생하는 예외 |
+| C001 | 상품 취소 시 주문이 이미 완료된 상태일 때 발생하는 예외 |
+| C002 | 상품 취소 시 주문이 이미 취소된 상태일 때 발생하는 예외 |
+| C003 | 상품 취소 시 취소 금액과 총 주문 금액이 일치하지 않을 때 발생하는 예외 |
+| D001 | 입력 파라미터가 잘못된 경우 발생하는 예외 |
 
 <br>
 
@@ -70,19 +70,20 @@
 - `GET http://localhost:8080/api/products?display_date=2022-08-21T00&page=0`
 
 - Http Status: 400
+
 ```json
 {
-    "errorResponse": {
-        "code": "D001",
-        "message": "요청이 올바르지 않습니다"
-    },
-    "errors": [
-        {
-            "field": "display_date",
-            "value": "2022-08-21T00",
-            "reason": "typeMismatch"
-        }
-    ]
+  "errorInfo": {
+    "code": "D001",
+    "message": "요청이 올바르지 않습니다"
+  },
+  "fieldErrors": [
+    {
+      "field": "display_date",
+      "value": "2022-08-21T00",
+      "reason": "typeMismatch"
+    }
+  ]
 }
 ```
 
@@ -90,84 +91,86 @@
 
 - `GET http://localhost:8080/api/products?display_date=2022-08-21T00:00&page=1`
 - Http Status: 200
+
 ```json
 {
-	"content": [
-		{
-			"id": 6,
-			"name": "(아마존)Corsai 벤전스LPX DDR4 데스크톱 메모리 키트 16GB (2x8GB) 블랙(CMK16GX4M2B3200C16)",
-			"price": 84270,
-			"quantity": 30,
-			"sellerId": 3,
-			"sellerName": "하이닉스",
-			"status": "SALE"
-		},
-		{
-			"id": 7,
-			"name": "갤럭시S22",
-			"price": 1200000,
-			"quantity": 30,
-			"sellerId": 4,
-			"sellerName": "삼성",
-			"status": "SALE"
-		},
-		{
-			"id": 8,
-			"name": "갤럭시 워치 4",
-			"price": 220000,
-			"quantity": 60,
-			"sellerId": 4,
-			"sellerName": "삼성",
-			"status": "SALE"
-		},
-		{
-			"id": 9,
-			"name": "갤럭시S10",
-			"price": 1000000,
-			"quantity": 100,
-			"sellerId": 4,
-			"sellerName": "삼성",
-			"status": "SUSPENDED"
-		},
-		{
-			"id": 10,
-			"name": "갤럭시 버즈 프로",
-			"price": 330000,
-			"quantity": 100,
-			"sellerId": 4,
-			"sellerName": "삼성",
-			"status": "SALE"
-		}
-	],
-	"pageable": {
-		"sort": {
-			"sorted": false,
-			"unsorted": true,
-			"empty": true
-		},
-		"pageNumber": 1,
-		"pageSize": 5,
-		"offset": 5,
-		"paged": true,
-		"unpaged": false
-	},
-	"totalPages": 2,
-	"totalElements": 10,
-	"last": true,
-	"numberOfElements": 5,
-	"sort": {
-		"sorted": false,
-		"unsorted": true,
-		"empty": true
-	},
-	"size": 5,
-	"number": 1,
-	"first": false,
-	"empty": false
+  "content": [
+    {
+      "id": 6,
+      "name": "(아마존)Corsai 벤전스LPX DDR4 데스크톱 메모리 키트 16GB (2x8GB) 블랙(CMK16GX4M2B3200C16)",
+      "price": 84270,
+      "quantity": 30,
+      "sellerId": 3,
+      "sellerName": "하이닉스",
+      "status": "SALE"
+    },
+    {
+      "id": 7,
+      "name": "갤럭시S22",
+      "price": 1200000,
+      "quantity": 30,
+      "sellerId": 4,
+      "sellerName": "삼성",
+      "status": "SALE"
+    },
+    {
+      "id": 8,
+      "name": "갤럭시 워치 4",
+      "price": 220000,
+      "quantity": 60,
+      "sellerId": 4,
+      "sellerName": "삼성",
+      "status": "SALE"
+    },
+    {
+      "id": 9,
+      "name": "갤럭시S10",
+      "price": 1000000,
+      "quantity": 100,
+      "sellerId": 4,
+      "sellerName": "삼성",
+      "status": "SUSPENDED"
+    },
+    {
+      "id": 10,
+      "name": "갤럭시 버즈 프로",
+      "price": 330000,
+      "quantity": 100,
+      "sellerId": 4,
+      "sellerName": "삼성",
+      "status": "SALE"
+    }
+  ],
+  "pageable": {
+    "sort": {
+      "sorted": false,
+      "unsorted": true,
+      "empty": true
+    },
+    "pageNumber": 1,
+    "pageSize": 5,
+    "offset": 5,
+    "paged": true,
+    "unpaged": false
+  },
+  "totalPages": 2,
+  "totalElements": 10,
+  "last": true,
+  "numberOfElements": 5,
+  "sort": {
+    "sorted": false,
+    "unsorted": true,
+    "empty": true
+  },
+  "size": 5,
+  "number": 1,
+  "first": false,
+  "empty": false
 }
 ```
 
 **특이 사항**
+
 - 캐시 적용
 - spring.jpa.default_batch_fetch_size를 통한 N+1 쿼리 해결
 
@@ -199,23 +202,23 @@
 
 ```json
 {
-	"orders": [
-		{
-			"productId": 2,
-			"price": 800000,
-			"quantity": 1
-		},
-		{
-			"productId": 4,
-			"price": 110000,
-			"quantity": 1
-		}
-	],
-	"address": {
-		"city": "서울시 송파구",
-		"street": "송파대로 567",
-		"zipCode": "05503"
-	}
+  "orders": [
+    {
+      "productId": 2,
+      "price": 800000,
+      "quantity": 1
+    },
+    {
+      "productId": 4,
+      "price": 110000,
+      "quantity": 1
+    }
+  ],
+  "address": {
+    "city": "서울시 송파구",
+    "street": "송파대로 567",
+    "zipCode": "05503"
+  }
 }
 ```
 
@@ -223,70 +226,87 @@
 
 - Request Body의 productId에 해당하는 상품이 없을 때
 - Http Status: 400
+
 ```json
 {
-	"code": "A001",
-	"message": "해당 상품이 존재하지 않습니다"
+  "errorInfo": {
+    "code": "A001",
+    "message": "해당 상품이 존재하지 않습니다"
+  },
+  "fieldErrors": []
 }
 ```
 
 - Request Body의 수량보다 상품의 재고가 적을 때
 - Http Status: 400
+
 ```json
 {
-	"code": "B001",
-	"message": "재고가 부족합니다"
+  "errorInfo": {
+    "code": "B001",
+    "message": "재고가 부족합니다"
+  },
+  "fieldErrors": []
 }
 ```
 
 - Request Body의 금액보다 상품의 가격이 클 때
 - Http Status: 400
+
 ```json
 {
-	"code": "B002",
-	"message": "입금된 금액이 충분하지 않습니다"
+  "errorInfo": {
+    "code": "B002",
+    "message": "입금된 금액이 충분하지 않습니다"
+  },
+  "fieldErrors": []
 }
 ```
 
 - Request Body의 productId에 해당하는 상품이 판매 중지일 때
 - Http Status: 400
+
 ```json
 {
-	"code": "B003",
-	"message": "판매 중지된 상품입니다"
+  "errorInfo": {
+    "code": "B003",
+    "message": "판매 중지된 상품입니다"
+  },
+  "fieldErrors": []
 }
 ```
 
 - Request Body의 값이 음수이거나 비어 있어 Valid에서 검증되는 경우
 - Http Status: 400
+
 ```json
 {
-	"errorResponse": {
-		"code": "D001",
-		"message": "요청이 올바르지 않습니다"
-	},
-	"errors": [
-		{
-			"field": "orders[1].productId",
-			"value": "-9",
-			"reason": "0보다 커야 합니다"
-		},
-		{
-			"field": "address.city",
-			"value": "",
-			"reason": "비어 있을 수 없습니다"
-		},
-		{
-			"field": "orders[1].price",
-			"value": "-11000000",
-			"reason": "0보다 커야 합니다"
-		},
-		{
-			"field": "orders[1].quantity",
-			"value": "-1",
-			"reason": "0보다 커야 합니다"
-		}
-	]
+  "errorInfo": {
+    "code": "D001",
+    "message": "요청이 올바르지 않습니다"
+  },
+  "fieldErrors": [
+    {
+      "field": "orders[1].productId",
+      "value": "-9",
+      "reason": "0보다 커야 합니다"
+    },
+    {
+      "field": "address.city",
+      "value": "",
+      "reason": "비어 있을 수 없습니다"
+    },
+    {
+      "field": "orders[1].price",
+      "value": "-11000000",
+      "reason": "0보다 커야 합니다"
+    },
+    {
+      "field": "orders[1].quantity",
+      "value": "-1",
+      "reason": "0보다 커야 합니다"
+    }
+  ]
 }
 ```
 
@@ -294,13 +314,15 @@
 
 - 생성된 주문의 식별값을 반환
 - Http Status: 201
+
 ```json
 {
-	"orderId": 8
+  "orderId": 8
 }
 ```
 
 **특이 사항**
+
 - 비관적 락을 통해 상품의 수량을 감소시켜 동시성 문제 해결
 - Entity에 비즈니스 로직을 넣어 Entity가 직접 자신의 정보를 수정하도록 함
 
@@ -327,7 +349,7 @@
 
 ```json
 {
-	"cancelPrice": 4040000
+  "cancelPrice": 4040000
 }
 ```
 
@@ -335,49 +357,66 @@
 
 - PathVariable의 orderId에 해당하는 주문이 없을 때
 - Http Status: 400
+
 ```json
 {
-	"code": "A002",
-	"message": "해당 주문이 존재하지 않습니다"
+  "errorInfo": {
+    "code": "A002",
+    "message": "해당 주문이 존재하지 않습니다"
+  },
+  "fieldErrors": []
 }
 ```
 
 - PathVariable의 orderId에 해당하는 주문이 완료된 상태일 때
 - Http Status: 400
+
 ```json
 {
-	"code": "C001",
-	"message": "이미 완료된 주문은 취소가 불가능합니다"
+  "errorInfo": {
+    "code": "C001",
+    "message": "이미 완료된 주문은 취소가 불가능합니다"
+  },
+  "fieldErrors": []
 }
 ```
 
 - PathVariable의 orderId에 해당하는 주문이 이미 취소 상태일 때
 - Http Status: 400
+
 ```json
 {
-	"code": "C002",
-	"message": "이미 취소된 주문은 취소가 불가능합니다"
+  "errorInfo": {
+    "code": "C002",
+    "message": "이미 취소된 주문은 취소가 불가능합니다"
+  },
+  "fieldErrors": []
 }
 ```
 
 - Request Body의 취소 금액과 총 주문 금액이 일치하지 않을 때
 - Http Status: 400
+
 ```json
 {
-	"code": "C003",
-	"message": "취소 금액과 총 주문 금액이 일치하지 않습니다."
+  "errorInfo": {
+    "code": "C003",
+    "message": "취소 금액과 총 주문 금액이 일치하지 않습니다."
+  },
+  "fieldErrors": []
 }
 ```
 
 - Request Body의 값이 음수이거나 비어 있어 Valid에서 검증되는 경우
 - Http Status: 400
+
 ```json
 {
-  "errorResponse": {
+  "errorInfo": {
     "code": "D001",
     "message": "요청이 올바르지 않습니다"
   },
-  "errors": [
+  "fieldErrors": [
     {
       "field": "cancelPrice",
       "value": "-4040000",
@@ -391,9 +430,10 @@
 
 - 취소된 주문의 식별값을 반환
 - Http Status: 200
+
 ```json
 {
-	"orderId": 1
+  "orderId": 1
 }
 ```
 
@@ -429,19 +469,20 @@
 - Required
     - start_date
     - end_date
-    
+
 **Error Response**
 
 - start_date 또는 end_date의 ISO Date Time Format이 잘못되었을 때
 - `GET http://localhost:8080/api/orders?start_date=2022-06-20&end_date=2022-08-21T00:00`
 - Http Status: 400
+
 ```json
 {
-  "errorResponse": {
+  "errorInfo": {
     "code": "D001",
     "message": "요청이 올바르지 않습니다"
   },
-  "errors": [
+  "fieldErrors": [
     {
       "field": "start_date",
       "value": "2022-06-20",
@@ -454,18 +495,22 @@
 - start_date가 end_date보다 이후의 Date Time 일 때
 - `GET http://localhost:8080/api/orders?start_date=9999-12-20&end_date=2022-08-21T00:00`
 - Http Status: 400
+
 ```json
 {
-  "code": "D001",
-  "message": "요청이 올바르지 않습니다"
+  "errorInfo": {
+    "code": "D001",
+    "message": "요청이 올바르지 않습니다"
+  },
+  "fieldErrors": []
 }
 ```
-
 
 **Success Response**
 
 - `GET http://localhost:8080/api/orders?start_date=2022-06-20T00:00&end_date=2022-08-21T00:00`
 - Http Status: 200
+
 ```json
 {
   "content": [
@@ -586,14 +631,13 @@
 
 **특이 사항**
 
-- spring.jpa.default_batch_fetch_size를 통한 N+1 쿼리 해결 
+- spring.jpa.default_batch_fetch_size를 통한 N+1 쿼리 해결
 
 </div>
 </details>
 
 
 <br>
-
 
 ## 빌드 및 실행 방법
 
@@ -649,3 +693,4 @@ http://localhost:8080/h2-console
    - 여러 사용자가 동시 주문 시 동시성 문제를 pessimistic lock으로 해결
      - 일반적인 경우에는 성능이 좋지 않지만 굉장히 많은 트래픽이 들어왔을 때는 성능이 좋음
      - Redis로 Lettuce 또는 Redisson을 적용하는 것이 좋아 보임 
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fjeremy0405%2F11st-assignment&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
