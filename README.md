@@ -1,5 +1,40 @@
 # 11st-assignment
 
+## 과제를 구현하며 고민한 사항
+
+### 1. 일관된 예외를 설계하고 예외 응답을 내리도록 했습니다.
+
+- 클라이언트에서 예외 처리 로직을 일관되게 구현할 수 있도록 ErrorResponse를 설계했습니다.
+- `@Valid` 에서 예외 발생 시 fieldError에서 예외가 발생한 필드를 ErrorResponse에 담아 정확한 예외 메시지를 클라이언트에 전달하고자 했습니다.
+- 어플리케이션에서 발생한 예외는 CustomException을 정의한 후 ErrorCode Enum을 통해 예외를 관리했습니다.
+- `@ControllerAdvice`를 통해 Custom 예외와 `@Valid`에서 발생하는 예외를 핸들링 했습니다.
+
+<br>
+
+### 2. 조회 API의 경우 데이터의 양이 방대할 것으로 예상되므로 Page 처리와 캐시를 적용했습니다.
+
+- 조회의 경우 수많은 데이터가 있을 것으로 예상되어 페이징 처리를 하여 성능 향상을 도모했습니다.
+- 페이징 처리 시 fetch join을 사용하면 모든 데이터를 가져온 후 어플리케이션 레벨에서 페이징 하기 때문에 성능 저하가 발생하기 때문에 inner join 후 `spring.jpa.default_batch_fetch_size` 를 통해 해결했습니다.
+- 상품 조회 시 cache를 적용했습니다. 인자값으로 LocalDateTime에서 오늘 날짜와 Pageable의 페이지 번호를 결합한 키를 만들어 캐싱을 했습니다.
+   - 데이터 정합성을 위해서 cacheConfig 시 1분마다 캐시를 삭제하도록 했습니다.
+
+<br>
+
+### 3. 비즈니스 로직을 엔티티에서 처리하도록 구현하여 객체지향적인 설계를 하고자 노력했습니다.
+
+- 비즈니스 로직을 엔티티에서 처리하도록 해서 객체지향적인 코드를 작성하고자 했습니다.
+- 서비스 레이어에서는 Transaction, Cache 적용과 같은 infra를 적용하는데 집중하도록 했습니다.
+
+<br>
+
+### 4. 대량 트래픽에서 이슈가 없도록 구현했습니다.
+
+- 상품 조회 시 캐시를 사용하여 대량 트래픽에서 효율적으로 응답을 반환하도록 했습니다.
+- 여러 사용자가 동시 주문 시 동시성 문제를 pessimistic lock으로 해결했습니다.
+   - pessimistic lock의 작동을 확인하기 위해 테스트 코드를 작성했습니다.
+
+<br>
+
 ## 설계
 
 ### **테이블 설계**
@@ -664,33 +699,4 @@ http://localhost:8080/h2-console
 
 <br>
 
-## 과제를 구현하며 고민한 사항
-
-### 1. 일관된 에러를 설계하고 에러 응답을 내리자
-   - 클라이언트에서 예외 처리 로직을 일관되게 구현할 수 있도록 ErrorResponse를 내리고자 함
-   - 하지만 Valid를 통한 에러 발생 시 조금 더 정확한 정보를 반환하고 싶어서 ErrorDetailResponse를 두어 일관된 에러를 내리지 못하고 있음
-   - ErrorDetailResponse의 errors를 빈 리스트로 반환하더라도 하나로 통일하는 것이 바람직해 보임
-
-<br>
-
-### 2. 조회 API의 경우 데이터의 양이 방대할 것으로 예상되므로 Page 처리를 하자
-   - 조회의 경우 수많은 데이터가 있을 것으로 예상되어 페이징 처리를 함
-   - 페이징 처리 시 fetch join을 사용하면 모든 데이터를 가져온 후 어플리케이션 레벨에서 페이징 하기 때문에 성능 저하가 발생함
-   - inner join 후 spring.jpa.default_batch_fetch_size 를 통해 해결
-   - 상품 조회 시 cache를 적용함
-     - 데이터 정합성을 위해서 1분마다 캐시를 삭제하도록 함
-
-<br>
-
-### 3. 비즈니스 로직을 엔티티에서 처리하도록 하자
-   - 비즈니스 로직을 엔티티에서 처리하도록 해서 객체지향적인 코드를 작성하고자 노력함
-   - 서비스 레이어에서는 Transaction, Cache 적용과 같은 infra 적용 담당
-
-<br>
-
-### 4. 대량 트래픽에서 이슈가 없도록 구현하자
-   - 상품 조회 시 캐시를 사용하여 대량 트래픽에서 효율적으로 응답을 반환하도록 함
-   - 여러 사용자가 동시 주문 시 동시성 문제를 pessimistic lock으로 해결
-     - 일반적인 경우에는 성능이 좋지 않지만 굉장히 많은 트래픽이 들어왔을 때는 성능이 좋음
-     - Redis로 Lettuce 또는 Redisson을 적용하는 것이 좋아 보임 
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fjeremy0405%2F11st-assignment&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
