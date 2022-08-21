@@ -257,6 +257,39 @@
 }
 ```
 
+- Request Body의 값이 음수이거나 비어 있어 Valid에서 검증되는 경우
+- Http Status: 400
+```json
+{
+	"errorResponse": {
+		"code": "D001",
+		"message": "요청이 올바르지 않습니다"
+	},
+	"errors": [
+		{
+			"field": "orders[1].productId",
+			"value": "-9",
+			"reason": "0보다 커야 합니다"
+		},
+		{
+			"field": "address.city",
+			"value": "",
+			"reason": "비어 있을 수 없습니다"
+		},
+		{
+			"field": "orders[1].price",
+			"value": "-11000000",
+			"reason": "0보다 커야 합니다"
+		},
+		{
+			"field": "orders[1].quantity",
+			"value": "-1",
+			"reason": "0보다 커야 합니다"
+		}
+	]
+}
+```
+
 **Success Response**
 
 - 생성된 주문의 식별값을 반환
@@ -333,6 +366,24 @@
 {
 	"code": "C003",
 	"message": "취소 금액과 총 주문 금액이 일치하지 않습니다."
+}
+```
+
+- Request Body의 값이 음수이거나 비어 있어 Valid에서 검증되는 경우
+- Http Status: 400
+```json
+{
+  "errorResponse": {
+    "code": "D001",
+    "message": "요청이 올바르지 않습니다"
+  },
+  "errors": [
+    {
+      "field": "cancelPrice",
+      "value": "-4040000",
+      "reason": "0 이상이어야 합니다"
+    }
+  ]
 }
 ```
 
@@ -565,4 +616,3 @@ http://localhost:8080/h2-console
 <img width="456" alt="image" src="https://user-images.githubusercontent.com/81368630/185780913-de202727-c16d-4dfd-93a9-4ff29fa5bebf.png">
 
 위와 같이 설정 후 Connect 하여 DB 확인 가능
-
