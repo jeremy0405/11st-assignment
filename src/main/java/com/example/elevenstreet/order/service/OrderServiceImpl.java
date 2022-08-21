@@ -41,6 +41,16 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public OrderResponse order(String userId, OrderRequest orderRequest) {
 
+		List<OrderProduct> orderProducts = makeOrderProducts(orderRequest);
+
+		Order order = Order.createOrder(userId, orderRequest.getAddress(), orderProducts);
+
+		orderRepository.save(order);
+
+		return OrderResponse.from(order.getId());
+	}
+
+	private List<OrderProduct> makeOrderProducts(OrderRequest orderRequest) {
 		List<OrderProduct> orderProducts = new ArrayList<>();
 
 		for (SingleOrderRequest singleOrder : orderRequest.getOrders()) {
@@ -49,12 +59,7 @@ public class OrderServiceImpl implements OrderService {
 
 			orderProducts.add(OrderProduct.createOrderProduct(product, singleOrder.getPrice(), singleOrder.getQuantity()));
 		}
-
-		Order order = Order.createOrder(userId, orderRequest.getAddress(), orderProducts);
-
-		orderRepository.save(order);
-
-		return OrderResponse.from(order.getId());
+		return orderProducts;
 	}
 
 	@Transactional
